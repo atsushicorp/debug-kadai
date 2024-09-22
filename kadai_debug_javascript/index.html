@@ -63,13 +63,18 @@
             let seconds = document.getElementById('seconds').value || 0;
 
             // 入力フォームの値をチェック
+            //マイナスを数値を入力した場合でもスタートボタンが押せるため、マイナス数値が入力した場合は、エラーメッセージ表示とともにスタートボタンの表示を消す仕様を追加
             if (minutes < 0 || seconds < 0) {
-                document.getElementById('errors').innerText = "マイナスは入力できません";
-                document.getElementById('errors').classList.remove('hidden');
+                // document.getElementById('errors').innerText = "マイナスは入力できません";
+                // document.getElementById('errors').classList.remove('hidden');//スペル間違い
+                document.getElementById('error').innerText = "マイナスは入力できません";//修正追加
+                document.getElementById('error').classList.remove('hidden');//修正追加
+                document.getElementById('start').classList.add('hidden');//追加
                 return;
             }
 
             document.getElementById('error').classList.add('hidden');
+            document.getElementById('start').classList.remove('hidden');//追加
             document.getElementById('timer').innerText = `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
         }
 
@@ -80,6 +85,7 @@
             let timeLeft = (minutes * 60) + parseInt(seconds);
             setMode("progress");
             countdownInterval = setInterval(() => {
+                //console.log(isPaused);//デバッグ出力用
                 if(!isPaused) {
                     timeLeft--;
                     if(timeLeft < 0) {
@@ -110,6 +116,7 @@
         function resetCountdown() {
             clearInterval(countdownInterval);
             updateTimer();
+            isPaused = false;//修正追加コード
             setMode("restart");
         }
 
@@ -121,7 +128,8 @@
 
         // アラートを開始する関数
         function startAlert() {
-            let alertInterval = setInterval(() => {
+            // let alertInterval = setInterval(() => {//修正 let alertIntervalの「let」を除去
+            alertInterval = setInterval(() => {
                 document.body.style.backgroundColor = document.body.style.backgroundColor === 'red' ? 'white' : 'red';
             }, 1000);
             document.getElementById('alertStop').classList.remove('hidden')
